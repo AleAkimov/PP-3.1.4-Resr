@@ -88,26 +88,35 @@
                                                             <label for="email0"><b>Email</b></label>
                                                             <input th:name="email" th:type="text"
                                                                    class="form-control" id="email0"
-                                                                   th:value="${user.email}"/>
+                                                                   th:value="${user.email}" required/>
+                                                            <div th:if="${#fields.hasErrors('email')}" class="alert alert-danger"
+                                                                 th:errors="*">Email is invalid</div>
                                                             <br>
                                                             <br>
                                                             <label for="name0"><b>Name</b></label>
                                                             <input th:name="name" th:type="text"
                                                                    class="form-control" id="name0"
-                                                                   th:value="${user.name}"/>
+                                                                   th:value="${user.name}" required/>
+                                                            <div th:if="${#fields.hasErrors('name')}" class="alert alert-danger"
+                                                                 th:errors="*">Name is required</div>
                                                             <br>
                                                             <label for="company0"><b>Company</b></label>
                                                             <input th:name="company" th:type="text"
                                                                    class="form-control" id="company0"
-                                                                   th:value="${user.company}"/>
+                                                                   th:value="${user.company}" required/>
+                                                            <div th:if="${#fields.hasErrors('company')}" class="alert alert-danger"
+                                                                 th:errors="*">Company is required</div>
                                                             <br>
                                                             <label for="password0"><b>Password</b></label>
-                                                            <input th:name="password" type="text"
+                                                            <input th:name="password" type="password"
                                                                    class="form-control" id="password0"
+                                                                   placeholder="Enter password"
                                                                    th:value="${user.password}"/>
+                                                            <small class="form-text">Оставьте поле не тронутым, если не хотите менять пароль.</small>
                                                             <br>
                                                             <label for="exampleFormControlSelect3"><b>Role</b></label>
-                                                            <select multiple size="2" name="select_role" class="form-control" id="exampleFormControlSelect3">
+                                                            <label> <span style="color: red;">*</span></label>
+                                                            <select multiple size="2" name="select_role" class="form-control" id="exampleFormControlSelect3" required>
                                                                 <option th:each="role : ${role}" th:value="${role.getAuthority()}"
                                                                         th:text="${role.getAuthority() == 'ROLE_ADMIN'} ? 'ADMIN' : 'USER'"></option>
                                                             </select>

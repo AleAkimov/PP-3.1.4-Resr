@@ -2,11 +2,11 @@ package ru.akimov.spring.security.securityApp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.akimov.spring.security.securityApp.dao.UserDao;
+import ru.akimov.spring.security.securityApp.exeption.UserAlreadyExistsException;
 import ru.akimov.spring.security.securityApp.model.Role;
 import ru.akimov.spring.security.securityApp.model.User;
 
@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUser(User user, String[] roles) {
-        if (!(userDao.findByUsername(user.getEmail()).isEmpty())) {
-            throw new RuntimeException("Name already used");
+        if (!userDao.findByUsername(user.getEmail(), User.class).isEmpty()) {
+            throw new UserAlreadyExistsException("User with this email already exists");
         }
 
         Set<Role> role = new HashSet<>();
@@ -59,8 +59,10 @@ public class UserServiceImpl implements UserService {
         return userDao.getUserById(id);
     }
 
+
     @Override
     public void updateUser(User user, String[] roles) {
+        User existingUser = userDao.getUserById(user.getId());
         Set<Role> role = new HashSet<>();
         role.add(roleService.getAllRoles().get(1));
         for (String s : roles) {
@@ -69,20 +71,20 @@ public class UserServiceImpl implements UserService {
             }
         }
         user.setRoles(role);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (!user.getPassword().equals(existingUser.getPassword()) && user.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        } else {
+            user.setPassword(existingUser.getPassword());
+        }
+
         userDao.updateUser(user);
+
     }
+
 
     @Override
     public void deleteUserById(int id) {
         userDao.deleteUserById(id);
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String email) {
-        List<User> user = userDao.findByUsername(email);
-        return user.get(0);
-    }
-
 }
+

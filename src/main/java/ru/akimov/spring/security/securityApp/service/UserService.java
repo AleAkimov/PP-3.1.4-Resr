@@ -1,13 +1,11 @@
 package ru.akimov.spring.security.securityApp.service;
 
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.akimov.spring.security.securityApp.model.User;
 
 import java.util.List;
 
-public interface UserService extends UserDetailsService {
+public interface UserService {
     List<User> getAllUsers();
 
     void saveUser(User user, String[] roles);
@@ -18,5 +16,4 @@ public interface UserService extends UserDetailsService {
 
     void deleteUserById(int id);
 
-    UserDetails loadUserByUsername(String username);
 }

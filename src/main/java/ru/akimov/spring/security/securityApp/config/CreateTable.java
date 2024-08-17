@@ -32,7 +32,7 @@ public class CreateTable {
     Role adminRole = new Role("ROLE_ADMIN");
     Role userRole = new Role("ROLE_USER");
 
-    private final User admin = new User("tommy@mail.ru", "J", "MIB", "admin");
+    private final User admin = new User("1", "J", "MIB", "1");
     private final User user = new User("will@mail.ru", "K", "MIB", "admin");
 
     String[] roleAdmin = new String[]{"ROLE_ADMIN", "ROLE_USER"};

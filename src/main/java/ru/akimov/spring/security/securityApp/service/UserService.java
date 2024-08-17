@@ -16,4 +16,5 @@ public interface UserService {
 
     void deleteUserById(int id);
 
+    int countAdmins();
 }

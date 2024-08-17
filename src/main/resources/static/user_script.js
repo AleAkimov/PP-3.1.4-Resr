@@ -24,13 +24,15 @@ async function refreshUserPanel() {
     let user = await auth();
     let roles = user.roles.map(role => role.role.substring(5, role.role.length));
     let rolesInTable = '';
-    roles.forEach(role => {rolesInTable += `<div>${role}</div>`});
+    roles.forEach(role => {
+        rolesInTable += `<div>${role}</div>`
+    });
 
     tbody.innerHTML = `<tr>
             <td class="align-middle">${user.id}</td>
             <td class="align-middle">${user.username}</td>
             <td class="align-middle">${user.name}</td>
-            <td class="align-middle">${user.hobby}</td>            
+            <td class="align-middle">${user.company}</td>            
             <td class="align-middle">${rolesInTable}</td>
             </tr>`;
 }

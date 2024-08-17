@@ -71,7 +71,10 @@ public class UserServiceImpl implements UserService {
             }
         }
         user.setRoles(role);
-        if (!user.getPassword().equals(existingUser.getPassword()) && user.getPassword() != null) {
+        System.out.println(user.getPassword() + "НОВЫЙ");
+        System.out.println(user.getPassword().isEmpty());
+        System.out.println(existingUser.getPassword() + "СУЩЕСТВУЮЩИЙ");
+        if (!user.getPassword().equals(existingUser.getPassword()) && !user.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         } else {
             user.setPassword(existingUser.getPassword());
@@ -85,6 +88,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(int id) {
         userDao.deleteUserById(id);
+    }
+
+    public int countAdmins() {
+        List<User> users = userDao.getAllUsers(); // Предполагается, что вы получаете всех пользователей
+        return (int) users.stream()
+                .filter(user -> user.getRoles().stream()
+                        .anyMatch(role -> role.getRole().equals("ROLE_ADMIN"))) // Замените "ROLE_ADMIN" на текущее значение вашей роли администратора
+                .count();
     }
 }
 

@@ -6,14 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.akimov.spring.security.securityApp.dao.UserDaoImpl;
 import ru.akimov.spring.security.securityApp.exeption.RegistrationWrongUsernameException;
 import ru.akimov.spring.security.securityApp.exeption.RegistrationWrongUsernameResponse;
@@ -22,11 +15,8 @@ import ru.akimov.spring.security.securityApp.model.Role;
 import ru.akimov.spring.security.securityApp.model.User;
 import ru.akimov.spring.security.securityApp.service.RoleService;
 import ru.akimov.spring.security.securityApp.service.UserService;
-import ru.akimov.spring.security.securityApp.validation.OnUpdate;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -50,6 +40,7 @@ public class AdminController {
         List<User> userList = userService.getAllUsers();
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
+
     //+
     @PostMapping("/new")
     public ResponseEntity<HttpStatus> addUser(@RequestBody User user) {
@@ -65,11 +56,13 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(HttpStatus.valueOf("An error occurred while adding the user.")); // Возвращаем ошибку сервера.
         }
     }
+
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> showAllRoles() {
         List<Role> roleSet = roleService.getAllRoles();
         return new ResponseEntity<>(roleSet, HttpStatus.OK);
     }
+
     //+
     @PatchMapping("/edit/{id}")
     public ResponseEntity<HttpStatus> updateUser(
@@ -82,11 +75,18 @@ public class AdminController {
         userService.updateUser(user, roles);
         return ResponseEntity.ok(HttpStatus.OK);
     }
-//+
+
+    //+
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") int id) {
         userService.deleteUserById(id);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/admin-count")
+    public ResponseEntity<Integer> countAdmins() {
+        int adminCount = userService.countAdmins(); // Вам нужно создать метод countAdmins в UserService
+        return new ResponseEntity<>(adminCount, HttpStatus.OK);
     }
 
     @GetMapping("/auth")
@@ -100,6 +100,7 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @ExceptionHandler
     private ResponseEntity<RegistrationWrongUsernameResponse> exceptionHandler(RegistrationWrongUsernameException e) {
         return new ResponseEntity<>(new RegistrationWrongUsernameResponse("Username already exists"),
